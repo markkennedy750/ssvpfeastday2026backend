@@ -33,6 +33,12 @@ const registrantSchema = new mongoose.Schema(
       type: String,
       default: null,
     },
+    ticketId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
   },
   { timestamps: true }
 );

@@ -3,6 +3,7 @@ const Registrant = require('../models/Registrant');
 const asyncHandler = require('../utils/asyncHandler');
 const ApiError = require('../utils/ApiError');
 const uploadToCloudinary = require('../utils/uploadToCloudinary');
+const generateTicketId = require('../utils/generateTicketId');
 
 const signup = asyncHandler(async (req, res) => {
   const errors = validationResult(req);
@@ -27,6 +28,12 @@ const signup = asyncHandler(async (req, res) => {
     photoPublicId = result.public_id;
   }
 
+  let ticketId;
+  do {
+    ticketId = generateTicketId();
+    // eslint-disable-next-line no-await-in-loop
+  } while (await Registrant.exists({ ticketId }));
+
   const registrant = await Registrant.create({
     fullName,
     email,
@@ -34,6 +41,7 @@ const signup = asyncHandler(async (req, res) => {
     conference,
     photoUrl,
     photoPublicId,
+    ticketId,
   });
 
   res.status(201).json({
